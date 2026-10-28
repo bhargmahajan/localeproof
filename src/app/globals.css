@@ -1,0 +1,54 @@
+@import "tailwindcss";
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.maplibregl-popup-content {
+  background-color: #0f172a !important;
+  /* Tailwind slate-900 */
+  color: #f8fafc !important;
+  /* Tailwind slate-50 */
+  border: 1px solid #1e293b !important;
+  /* Tailwind slate-800 */
+  border-radius: 0.5rem !important;
+  padding: 0.5rem 0.75rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  font-family: inherit !important;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.5) !important;
+}
+
+/* Match the little triangle tip pointer to the dark background */
+.maplibregl-popup-tip {
+  border-top-color: #0f172a !important;
+  border-bottom-color: #0f172a !important;
+}
+
+/* Hide the tiny close button for a cleaner look */
+.maplibregl-popup-close-button {
+  display: none !important;
+}
