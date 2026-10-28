@@ -15,6 +15,8 @@ export default function HomePage() {
   const [password, setPassword] = useState("");
   const [authLoading, setAuthLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [authTermsAccepted, setAuthTermsAccepted] = useState(false);
+  const [paywallTermsAccepted, setPaywallTermsAccepted] = useState(false);
 
   const [isLocating, setIsLocating] = useState(false);
   const [currentYear, setCurrentYear] = useState<number | null>(null);
@@ -88,7 +90,11 @@ export default function HomePage() {
     e.preventDefault();
     setAuthLoading(true);
     const { error } = await supabase.auth.signUp({ email, password });
-    if (error) alert(error.message);
+    if (error) {
+      alert(error.message);
+    } else {
+      setAuthTermsAccepted(false); // Resets the checkbox on success
+    }
     setAuthLoading(false);
   };
 
@@ -169,6 +175,7 @@ export default function HomePage() {
       order_id: order.id,
       handler: async function (response: any) {
         setPaywall(null);
+        setPaywallTermsAccepted(false); // Resets the checkbox on success
         if (paywall.feature === 'audit') setLoadingAudit(true);
         if (paywall.feature === 'commute') setLoadingCommute(true);
         
@@ -357,6 +364,14 @@ export default function HomePage() {
                 <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
                   <input type="email" placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-slate-200 focus:outline-none focus:border-blue-500" required />
                   <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-slate-200 focus:outline-none focus:border-blue-500" required />
+
+                  <div className="flex items-start gap-2 pt-1">
+                    <input type="checkbox" id="auth-terms" checked={authTermsAccepted} onChange={(e) => setAuthTermsAccepted(e.target.checked)} className="mt-1 shrink-0" />
+                    <label htmlFor="auth-terms" className="text-xs text-slate-400 leading-tight">
+                      I agree to the <a href="/terms" className="text-blue-400 hover:underline" target="_blank">Terms of Service</a> and <a href="/privacy" className="text-blue-400 hover:underline" target="_blank">Privacy Policy</a>.
+                    </label>
+                  </div>
+
                   <div className="flex gap-3 pt-2">
                     <button onClick={handleSignIn} disabled={authLoading} className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 rounded-lg text-sm disabled:opacity-50">Sign In</button>
                     <button onClick={handleSignUp} disabled={authLoading} className="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-medium py-2.5 rounded-lg text-sm disabled:opacity-50 border border-slate-700">Create Account</button>
@@ -579,10 +594,17 @@ export default function HomePage() {
         <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
           <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 max-w-md w-full shadow-2xl">
             <h2 className="text-2xl font-bold text-white mb-2">Free Limit Reached</h2>
-            <p className="text-slate-400 text-sm mb-6">Upgrade to unlock deeper insights and bypass builder marketing claims.</p>
+            <p className="text-slate-400 text-sm mb-4">Upgrade to unlock deeper insights and bypass builder marketing claims.</p>
+            
+            <div className="flex items-start gap-2 mb-6 bg-slate-950 p-3 rounded-lg border border-slate-800">
+              <input type="checkbox" id="paywall-terms" checked={paywallTermsAccepted} onChange={(e) => setPaywallTermsAccepted(e.target.checked)} className="mt-0.5 shrink-0" />
+              <label htmlFor="paywall-terms" className="text-xs text-slate-400 leading-tight">
+                I accept the <a href="/terms" className="text-blue-400 hover:underline" target="_blank">Terms of Service</a> and <a href="/refund" className="text-blue-400 hover:underline" target="_blank">Cancellation & Refund Policy</a> (No refunds for used credits).
+              </label>
+            </div>
             
             <div className="space-y-4">
-              <button onClick={() => handlePayment('single')} className="w-full flex items-center justify-between p-4 rounded-lg border border-slate-700 bg-slate-800 hover:border-blue-500 hover:bg-slate-800/80 transition text-left">
+              <button onClick={() => handlePayment('single')} disabled={!paywallTermsAccepted} className="w-full flex items-center justify-between p-4 rounded-lg border border-slate-700 bg-slate-800 hover:border-blue-500 hover:bg-slate-800/80 transition text-left disabled:opacity-50 disabled:cursor-not-allowed">
                 <div>
                   <span className="block font-semibold text-slate-200">Single Report</span>
                   <span className="text-xs text-slate-400">Unlock this exact location</span>
@@ -590,7 +612,7 @@ export default function HomePage() {
                 <span className="font-bold text-blue-400">₹49</span>
               </button>
               
-              <button onClick={() => handlePayment('shortlist')} className="w-full flex items-center justify-between p-4 rounded-lg border border-emerald-700 bg-emerald-900/20 hover:border-emerald-500 hover:bg-emerald-900/40 transition text-left relative overflow-hidden">
+              <button onClick={() => handlePayment('shortlist')} disabled={!paywallTermsAccepted} className="w-full flex items-center justify-between p-4 rounded-lg border border-emerald-700 bg-emerald-900/20 hover:border-emerald-500 hover:bg-emerald-900/40 transition text-left relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed">
                 <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-bl-lg">POPULAR</div>
                 <div>
                   <span className="block font-semibold text-emerald-400">Shortlist Bundle</span>
