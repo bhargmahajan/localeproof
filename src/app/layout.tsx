@@ -2,24 +2,33 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "LocaleProof | AI Real Estate Truth Engine & Neighborhood Audit",
-  description: "Verify builder marketing claims with real pedestrian commute routing and AI-powered neighborhood quality audits. Get true livability scores before you invest.",
+  title: "LocaleProof | Real Estate Truth & Neighborhood Quality Engine",
+  description: "Verify builder marketing claims, audit neighborhood livability, and calculate true pedestrian commute times with AI-powered geospatial data.",
   keywords: [
-    "real estate verification", 
-    "neighborhood audit", 
+    "real estate audit", 
+    "proptech", 
     "commute verifier", 
-    "property check India", 
-    "livability score", 
-    "real estate AI data"
+    "neighborhood quality", 
+    "property investment", 
+    "AI real estate"
   ],
+  authors: [{ name: "LocaleProof" }],
   openGraph: {
     title: "LocaleProof | Real Estate Truth Engine",
-    description: "Expose ad claims vs. actual walking commutes.",
+    description: "Don't fall for exaggerated builder claims. Verify real commute times and audit neighborhood quality before you invest.",
+    url: "https://localeproof-orpin.vercel.app",
+    siteName: "LocaleProof",
     type: "website",
   },
-  verification: {
-    google: "cVXg6Zj2QY_2xwnIbVg9JSXUXSMv9M0PLJzpMkVaJE8", // We will get this in Step 4
+  twitter: {
+    card: "summary_large_image",
+    title: "LocaleProof | Real Estate Truth Engine",
+    description: "Verify real commute times and audit neighborhood quality before you invest.",
   },
+  robots: {
+    index: true,
+    follow: true,
+  }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
