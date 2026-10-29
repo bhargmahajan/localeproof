@@ -97,8 +97,7 @@ export async function GET(request: Request) {
   try {
     // Overpass Request
     const tags = getCategoryTags(category);
-    // Increase search radius to 5km (5000 meters) for suburban/tier-2 areas
-    const radius = 5000;
+    const radius = 2000;
     
     // Add [timeout:10] to prevent the 12-second server hanging
     const overpassQuery = `

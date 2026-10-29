@@ -462,22 +462,22 @@ export default function HomePage() {
                      <div>
                        <label className="block text-xs font-medium text-slate-400 mb-1">Service Category to Locate</label>
                        <select value={category} onChange={(e) => { setCategory(e.target.value); setCommuteResult(null); }} className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-sm text-slate-200">
-  <optgroup label="Civic & Transit">
-    <option value="transit">Nearest Metro / Train Station</option>
-    <option value="bus">Nearest Bus Stop</option>
-    <option value="school">Nearest School / College</option>
-    <option value="hospital">Nearest Hospital / Clinic / Doctor</option>
-    <option value="park">Nearest Park / Playground</option>
-    <option value="worship">Nearest Place of Worship</option>
-  </optgroup>
-  <optgroup label="Daily Essentials">
-    <option value="grocery">Nearest Grocery / Supermarket</option>
-    <option value="pharmacy">Nearest Pharmacy</option>
-    <option value="gym">Nearest Gym / Fitness Center</option>
-    <option value="bank">Nearest Bank / ATM</option>
-    <option value="restaurant">Nearest Restaurant / Cafe</option>
-  </optgroup>
-</select>
+                        <optgroup label="Civic & Transit">
+                          <option value="transit">Nearest Metro / Train Station</option>
+                          <option value="bus">Nearest Bus Stop</option>
+                          <option value="school">Nearest School / College</option>
+                          <option value="hospital">Nearest Hospital / Clinic / Doctor</option>
+                          <option value="park">Nearest Park / Playground</option>
+                          <option value="worship">Nearest Place of Worship</option>
+                        </optgroup>
+                        <optgroup label="Daily Essentials">
+                          <option value="grocery">Nearest Grocery / Supermarket</option>
+                          <option value="pharmacy">Nearest Pharmacy</option>
+                          <option value="gym">Nearest Gym / Fitness Center</option>
+                          <option value="bank">Nearest Bank / ATM</option>
+                          <option value="restaurant">Nearest Restaurant / Cafe</option>
+                        </optgroup>
+                      </select>
                      </div>
 
                      <div>
@@ -556,28 +556,29 @@ export default function HomePage() {
                         "{auditResult.executiveSummary}"
                       </div>
                       <div className="grid grid-cols-2 gap-4">
-  <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
-    <div className="flex items-center gap-2 text-blue-400 mb-1"><Droplets className="w-4 h-4"/> <span className="font-semibold text-sm">Utilities</span></div>
-    <p className="text-xs text-slate-400"><strong className="text-slate-200">Water:</strong> {auditResult.utilities.waterAvailability}</p>
-    <p className="text-xs text-slate-400"><strong className="text-slate-200">Power:</strong> {auditResult.utilities.powerOutageFrequency}</p>
-  </div>
+                        <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
+                          <div className="flex items-center gap-2 text-blue-400 mb-1"><Droplets className="w-4 h-4"/> <span className="font-semibold text-sm">Utilities</span></div>
+                          <p className="text-xs text-slate-400"><strong className="text-slate-200">Water:</strong> {auditResult.utilities.waterAvailability}</p>
+                          <p className="text-xs text-slate-400"><strong className="text-slate-200">Power:</strong> {auditResult.utilities.powerOutageFrequency}</p>
+                        </div>
   
-  <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
-    <div className="flex items-center gap-2 text-emerald-400 mb-1"><Wind className="w-4 h-4"/> <span className="font-semibold text-sm">Environment</span></div>
-    <p className="text-xs text-slate-400"><strong className="text-slate-200">Live AQI:</strong> {auditResult.environment.aqiAverage}</p>
-    <p className="text-xs text-slate-400"><strong className="text-slate-200">Monsoon:</strong> {auditResult.environment.monsoonVulnerability}</p>
-  </div>
+                        <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
+                          <div className="flex items-center gap-2 text-emerald-400 mb-1"><Wind className="w-4 h-4"/> <span className="font-semibold text-sm">Environment</span></div>
+                          <p className="text-xs text-slate-400"><strong className="text-slate-200">Live AQI:</strong> {auditResult.environment.aqiAverage}</p>
+                          <p className="text-xs text-slate-400"><strong className="text-slate-200">Monsoon:</strong> {auditResult.environment.monsoonVulnerability}</p>
+                        </div>
 
-  <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
-    <div className="flex items-center gap-2 text-rose-400 mb-1"><ShieldAlert className="w-4 h-4"/> <span className="font-semibold text-sm">Security</span></div>
-    <p className="text-xs text-slate-400 leading-relaxed">{auditResult.security?.crimeIndex || "Data unavailable"}</p>
-  </div>
+                        <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
+                          <div className="flex items-center gap-2 text-rose-400 mb-1"><ShieldAlert className="w-4 h-4"/> <span className="font-semibold text-sm">Security</span></div>
+                          <p className="text-xs text-slate-400 leading-relaxed">{auditResult.security?.crimeIndex || "Data unavailable"}</p>
+                        </div>
 
-  <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
-    <div className="flex items-center gap-2 text-purple-400 mb-1"><Building2 className="w-4 h-4"/> <span className="font-semibold text-sm">Development</span></div>
-    <p className="text-xs text-slate-400 leading-relaxed">{auditResult.development?.futureInfrastructure || "Data unavailable"}</p>
-  </div>
-</div>
+                        <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
+                          <div className="flex items-center gap-2 text-purple-400 mb-1"><Building2 className="w-4 h-4"/> <span className="font-semibold text-sm">Development</span></div>
+                          <p className="text-xs text-slate-400 leading-relaxed">{auditResult.development?.futureInfrastructure || "Data unavailable"}</p>
+                        </div>
+                      </div>
+
                       <button onClick={() => setAuditResult(null)} className="w-full py-2 text-xs text-slate-500 hover:text-slate-300">Clear Report</button>
                     </div>
                   )}
@@ -626,19 +627,20 @@ export default function HomePage() {
         </div>
       )}
 
-{/* Add this at the bottom of your main container */}
-<footer className="mt-0 py-2 border-t border-slate-800 text-center text-xs text-slate-500">
-  <div className="flex flex-wrap justify-center gap-4">
-    <a href="/terms" className="hover:text-blue-400 transition">Terms of Service</a>
-    <a href="/privacy" className="hover:text-blue-400 transition">Privacy Policy</a>
-    <a href="/refund" className="hover:text-blue-400 transition">Cancellation & Refunds</a>
-    <a href="mailto:support@localeproof.com" className="hover:text-blue-400 transition">Contact Us</a>
-  </div>
-  <p>© {currentYear || 2026} LocaleProof. All rights reserved.</p>  <p className="mt-0">
-    Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer" className="underline">OpenStreetMap</a> contributors. 
-    Routing by <a href="https://openrouteservice.org/" target="_blank" rel="noreferrer" className="underline">OpenRouteService</a>.
-  </p>
-</footer>
+      {/* Add this at the bottom of your main container */}
+      <footer className="mt-0 py-2 border-t border-slate-800 text-center text-xs text-slate-500">
+        <div className="flex flex-wrap justify-center gap-4">
+          <a href="/terms" className="hover:text-blue-400 transition">Terms of Service</a>
+          <a href="/privacy" className="hover:text-blue-400 transition">Privacy Policy</a>
+          <a href="/refund" className="hover:text-blue-400 transition">Cancellation & Refunds</a>
+          <a href="mailto:support@localeproof.com" className="hover:text-blue-400 transition">Contact Us</a>
+        </div>
+        <p>© {currentYear || 2026} LocaleProof. All rights reserved.</p>
+        <p className="mt-0">
+        Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer" className="underline">OpenStreetMap</a> contributors. 
+        Routing by <a href="https://openrouteservice.org/" target="_blank" rel="noreferrer" className="underline">OpenRouteService</a>.
+        </p>
+      </footer>
     </main>
   );
 }

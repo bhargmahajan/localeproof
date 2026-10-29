@@ -78,7 +78,6 @@ export async function GET(request: Request) {
     } catch (e) {
       console.warn("Failed to fetch live AQI:", e);
     }
-    // ---------------------------------------------------
 
     const prompt = `
       Act as an expert Global real estate data analyst. Analyze the geographic area at coordinates: Latitude ${lat}, Longitude ${lng}. 
