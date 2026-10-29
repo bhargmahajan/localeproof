@@ -342,7 +342,7 @@ export default function HomePage() {
       </header>
 
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 p-6">
-        <div className="lg:col-span-7 flex flex-col h-[500px]">
+        <div className="lg:col-span-7 flex flex-col h-[525px]">
           <LocaleMap
             lat={coords.lat}
             lng={coords.lng}
@@ -353,10 +353,10 @@ export default function HomePage() {
           />
         </div>
 
-        <div className="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-xl flex flex-col overflow-hidden h-[500px]">
+        <div className="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-xl flex flex-col overflow-hidden h-[525px]">
           {!session ? (
-            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-              <ShieldCheck className="w-12 h-12 text-blue-500 mb-4" />
+            <div className="flex-1 flex flex-col items-center justify-center p-4 text-center">
+              <ShieldCheck className="w-12 h-12 text-blue-500" />
               <h2 className="text-2xl font-bold text-slate-100">Sign in to LocaleProof</h2>
               <p className="text-sm text-slate-400 mt-2 mb-8">Access the Commute Verifier and Neighborhood Quality Audits.</p>
               
@@ -365,14 +365,14 @@ export default function HomePage() {
                   <input type="email" placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-slate-200 focus:outline-none focus:border-blue-500" required />
                   <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-slate-200 focus:outline-none focus:border-blue-500" required />
 
-                  <div className="flex items-start gap-2 pt-1">
-                    <input type="checkbox" id="auth-terms" checked={authTermsAccepted} onChange={(e) => setAuthTermsAccepted(e.target.checked)} className="mt-1 shrink-0" />
+                  <div className="flex items-start gap-2">
+                    <input type="checkbox" id="auth-terms" checked={authTermsAccepted} onChange={(e) => setAuthTermsAccepted(e.target.checked)} className="shrink-0" />
                     <label htmlFor="auth-terms" className="text-xs text-slate-400 leading-tight">
                       I agree to the <a href="/terms" className="text-blue-400 hover:underline" target="_blank">Terms of Service</a> and <a href="/privacy" className="text-blue-400 hover:underline" target="_blank">Privacy Policy</a>.
                     </label>
                   </div>
 
-                  <div className="flex gap-3 pt-2">
+                  <div className="flex gap-3">
                     <button onClick={handleSignIn} disabled={authLoading} className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 rounded-lg text-sm disabled:opacity-50">Sign In</button>
                     <button onClick={handleSignUp} disabled={authLoading} className="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-medium py-2.5 rounded-lg text-sm disabled:opacity-50 border border-slate-700">Create Account</button>
                   </div>
@@ -627,14 +627,14 @@ export default function HomePage() {
       )}
 
 {/* Add this at the bottom of your main container */}
-<footer className="mt-0 py-6 border-t border-slate-800 text-center text-xs text-slate-500">
-  <div className="flex flex-wrap justify-center gap-4 mb-2">
+<footer className="mt-0 py-2 border-t border-slate-800 text-center text-xs text-slate-500">
+  <div className="flex flex-wrap justify-center gap-4">
     <a href="/terms" className="hover:text-blue-400 transition">Terms of Service</a>
     <a href="/privacy" className="hover:text-blue-400 transition">Privacy Policy</a>
     <a href="/refund" className="hover:text-blue-400 transition">Cancellation & Refunds</a>
     <a href="mailto:support@localeproof.com" className="hover:text-blue-400 transition">Contact Us</a>
   </div>
-  <p>© {currentYear || 2026} LocaleProof. All rights reserved.</p>  <p className="mt-1">
+  <p>© {currentYear || 2026} LocaleProof. All rights reserved.</p>  <p className="mt-0">
     Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer" className="underline">OpenStreetMap</a> contributors. 
     Routing by <a href="https://openrouteservice.org/" target="_blank" rel="noreferrer" className="underline">OpenRouteService</a>.
   </p>

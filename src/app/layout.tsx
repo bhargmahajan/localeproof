@@ -1,29 +1,31 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "LocaleProof",
-  description: "Expose builder marketing claims with real pedestrian commute verification and AI-powered neighborhood quality audits.",
+  title: "LocaleProof | AI Real Estate Truth Engine & Neighborhood Audit",
+  description: "Verify builder marketing claims with real pedestrian commute routing and AI-powered neighborhood quality audits. Get true livability scores before you invest.",
+  keywords: [
+    "real estate verification", 
+    "neighborhood audit", 
+    "commute verifier", 
+    "property check India", 
+    "livability score", 
+    "real estate AI data"
+  ],
+  openGraph: {
+    title: "LocaleProof | Real Estate Truth Engine",
+    description: "Expose ad claims vs. actual walking commutes.",
+    type: "website",
+  },
+  verification: {
+    google: "cVXg6Zj2QY_2xwnIbVg9JSXUXSMv9M0PLJzpMkVaJE8", // We will get this in Step 4
+  },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en">
+      <body className="bg-slate-950 text-slate-100">{children}</body>
     </html>
   );
 }
