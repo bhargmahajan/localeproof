@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import LocaleMap from "@/components/LocaleMap";
 import { supabase } from "@/lib/supabase";
 import { MapPin, ShieldCheck, Footprints, AlertTriangle, CheckCircle2, Navigation, FileSearch, Droplets, Wind, Truck, Search, LogOut, LayoutDashboard, RefreshCw, Clock, LocateFixed, ShieldAlert, Building2 } from "lucide-react";
+import { submitPhone } from "@/app/actions/onboarding";
 
 export default function HomePage() {
   const [coords, setCoords] = useState({ lat: 12.9784, lng: 77.6408 });
@@ -20,6 +21,37 @@ export default function HomePage() {
 
   const [isLocating, setIsLocating] = useState(false);
   const [currentYear, setCurrentYear] = useState<number | null>(null);
+
+  // Phone Onboarding State
+  const [phoneLoading, setPhoneLoading] = useState(false);
+  const [phoneError, setPhoneError] = useState("");
+
+  const handlePhoneSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setPhoneLoading(true);
+    setPhoneError("");
+    
+    const formData = new FormData(e.currentTarget);
+    
+    // Grab the 10 digits and force the country code so Supabase accepts it
+    const rawPhone = formData.get("phone") as string;
+    formData.set("phone", "+91" + rawPhone); 
+    
+    formData.append("token", session.access_token); 
+    
+    try {
+      const res = await submitPhone(formData);
+      if (res?.error) {
+        setPhoneError(res.error);
+      } else {
+        const { data } = await supabase.auth.refreshSession();
+        if (data.session) setSession(data.session);
+      }
+    } catch (err) {
+      setPhoneError("An unexpected error occurred.");
+    }
+    setPhoneLoading(false);
+  };
 
   const handleLocateMe = () => {
     if (!navigator.geolocation) {
@@ -81,7 +113,7 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    if (activeTab === "dashboard" && session) {
+    if (activeTab === "dashboard" && session && session.user?.phone?.trim() !== "") {
       fetchDashboardData();
     }
   }, [activeTab, session]);
@@ -93,7 +125,7 @@ export default function HomePage() {
     if (error) {
       alert(error.message);
     } else {
-      setAuthTermsAccepted(false); // Resets the checkbox on success
+      setAuthTermsAccepted(false);
     }
     setAuthLoading(false);
   };
@@ -175,7 +207,7 @@ export default function HomePage() {
       order_id: order.id,
       handler: async function (response: any) {
         setPaywall(null);
-        setPaywallTermsAccepted(false); // Resets the checkbox on success
+        setPaywallTermsAccepted(false);
         if (paywall.feature === 'audit') setLoadingAudit(true);
         if (paywall.feature === 'commute') setLoadingCommute(true);
         
@@ -221,7 +253,6 @@ export default function HomePage() {
       if (!res.ok) throw new Error(json.error || "Verification failed");
       setCommuteResult(json);
       
-      // Only save if it's a new generation
       if (forceRefresh || !json.source) {
         await saveToHistory('commute', { ...json, category }); 
       }
@@ -260,7 +291,6 @@ export default function HomePage() {
     }
   };
 
-  // Helper for dashboard relative time
   const timeAgo = (dateStr: string) => {
     const seconds = Math.floor((new Date().getTime() - new Date(dateStr).getTime()) / 1000);
     let interval = seconds / 86400;
@@ -281,7 +311,7 @@ export default function HomePage() {
         setAuditResult(item.report_data);
       } else {
         setAuditResult(null);
-        generateAudit(true); // Force refresh using 1 credit
+        generateAudit(true);
       }
     } else {
       setActiveTab('commute');
@@ -290,7 +320,7 @@ export default function HomePage() {
         setCommuteResult(item.report_data);
       } else {
         setCommuteResult(null);
-        verifyCommute(true); // Force refresh using 1 credit
+        verifyCommute(true);
       }
     }
   };
@@ -298,6 +328,8 @@ export default function HomePage() {
   useEffect(() => {
     setCurrentYear(new Date().getFullYear());
   }, []);
+
+  const hasVerifiedPhone = session?.user?.phone && session.user.phone.trim() !== "";
 
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col relative">
@@ -373,8 +405,8 @@ export default function HomePage() {
                   </div>
 
                   <div className="flex gap-3">
-                    <button onClick={handleSignIn} disabled={authLoading} className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 rounded-lg text-sm disabled:opacity-50">Sign In</button>
-                    <button onClick={handleSignUp} disabled={authLoading} className="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-medium py-2.5 rounded-lg text-sm disabled:opacity-50 border border-slate-700">Create Account</button>
+                    <button onClick={handleSignIn} disabled={authLoading || !authTermsAccepted} className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 rounded-lg text-sm disabled:opacity-50">Sign In</button>
+                    <button onClick={handleSignUp} disabled={authLoading || !authTermsAccepted} className="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-medium py-2.5 rounded-lg text-sm disabled:opacity-50 border border-slate-700">Create Account</button>
                   </div>
                 </form>
 
@@ -384,10 +416,44 @@ export default function HomePage() {
                   <div className="flex-grow border-t border-slate-800"></div>
                 </div>
 
-                <button onClick={handleGoogleSignIn} disabled={authLoading} className="w-full bg-slate-100 hover:bg-white text-slate-900 font-semibold py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 transition disabled:opacity-50">
+                <button onClick={handleGoogleSignIn} disabled={authLoading || !authTermsAccepted} className="w-full bg-slate-100 hover:bg-white text-slate-900 font-semibold py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 transition disabled:opacity-50">
                   Continue with Google
                 </button>
               </div>
+            </div>
+          ) : !hasVerifiedPhone ? (
+            <div className="flex-1 flex flex-col items-center justify-center p-4 text-center">
+              <ShieldAlert className="w-12 h-12 text-blue-500 mb-4" />
+              <h2 className="text-2xl font-bold text-slate-100">Claim Your 2 Free Credits</h2>
+              <p className="text-sm text-slate-400 mt-2 mb-8">
+                To prevent spam, please verify your unique mobile number to unlock the dashboard.
+              </p>
+              
+              <form onSubmit={handlePhoneSubmit} className="w-full max-w-sm space-y-4">
+              <input 
+                    type="tel" 
+                    name="phone" 
+                    required 
+                    minLength={10}
+                    maxLength={10}
+                    pattern="[0-9]{10}"
+                    title="Please enter exactly 10 digits"
+                    placeholder="9876543210"
+                    onInput={(e) => {
+                      // Instantly strip any non-numbers and enforce max 10 chars
+                      e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, '').slice(0, 10);
+                    }}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 pl-10 text-sm text-slate-200 focus:outline-none focus:border-blue-500"
+                  />
+                {phoneError && <p className="text-red-400 text-xs">{phoneError}</p>}
+                <button 
+                  type="submit" 
+                  disabled={phoneLoading} 
+                  className="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 rounded-lg text-sm transition disabled:opacity-50"
+                >
+                  {phoneLoading ? "Verifying & Unlocking..." : "Unlock Dashboard"}
+                </button>
+              </form>
             </div>
           ) : (
             <>
@@ -450,7 +516,6 @@ export default function HomePage() {
                   </div>
                 )}
                 
-                {/* Audit and Commute sections hidden here for brevity, they remain identical to earlier code! */}
                 {activeTab === "commute" && (
                    <div className="space-y-6">
                    <div>
@@ -561,7 +626,7 @@ export default function HomePage() {
                           <p className="text-xs text-slate-400"><strong className="text-slate-200">Water:</strong> {auditResult.utilities.waterAvailability}</p>
                           <p className="text-xs text-slate-400"><strong className="text-slate-200">Power:</strong> {auditResult.utilities.powerOutageFrequency}</p>
                         </div>
-  
+ 
                         <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
                           <div className="flex items-center gap-2 text-emerald-400 mb-1"><Wind className="w-4 h-4"/> <span className="font-semibold text-sm">Environment</span></div>
                           <p className="text-xs text-slate-400"><strong className="text-slate-200">Live AQI:</strong> {auditResult.environment.aqiAverage}</p>
@@ -627,7 +692,6 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Add this at the bottom of your main container */}
       <footer className="mt-0 py-2 border-t border-slate-800 text-center text-xs text-slate-500">
         <div className="flex flex-wrap justify-center gap-4">
           <a href="/terms" className="hover:text-blue-400 transition">Terms of Service</a>
