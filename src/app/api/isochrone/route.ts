@@ -10,8 +10,12 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Missing lat or lng parameters' }, { status: 400 });
   }
 
-  const lat = parseFloat(latStr);
-  const lng = parseFloat(lngStr);
+  const rawLat = parseFloat(latStr);
+  const rawLng = parseFloat(lngStr);
+
+// Round to 3 decimal places (~111 meters)
+  const lat = Math.round(rawLat * 1000) / 1000;
+  const lng = Math.round(rawLng * 1000) / 1000;
   const cacheKey = getCoordCacheKey('isochrone', lat, lng);
 
   try {
@@ -37,7 +41,9 @@ export async function GET(request: Request) {
 
     if (!orsResponse.ok) {
       const errorText = await orsResponse.text();
-      return NextResponse.json({ error: `ORS Error: ${errorText}` }, { status: orsResponse.status });
+      // FIX: Log raw text internally, return generic 502 Bad Gateway
+      console.error("ORS API Error:", errorText);
+      return NextResponse.json({ error: "Failed to generate travel time polygons from the routing service." }, { status: 502 });
     }
 
     const data = await orsResponse.json();
@@ -47,6 +53,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ source: 'api', data });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message || 'Internal Server Error' }, { status: 500 });
+    console.error("Isochrone Route Error:", err);
+    return NextResponse.json({ error: "An internal server error occurred." }, { status: 500 });
   }
 }

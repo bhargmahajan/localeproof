@@ -17,7 +17,9 @@ export default function HomePage() {
   const [authLoading, setAuthLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [authTermsAccepted, setAuthTermsAccepted] = useState(false);
+  const [ageVerified, setAgeVerified] = useState(false); // Add this new state
   const [paywallTermsAccepted, setPaywallTermsAccepted] = useState(false);
+  
 
   const [isLocating, setIsLocating] = useState(false);
   const [currentYear, setCurrentYear] = useState<number | null>(null);
@@ -404,9 +406,16 @@ export default function HomePage() {
                     </label>
                   </div>
 
+                  <div className="flex items-start gap-2">
+                    <input type="checkbox" id="age-verify" checked={ageVerified} onChange={(e) => setAgeVerified(e.target.checked)} className="shrink-0" />
+                    <label htmlFor="age-verify" className="text-xs text-slate-400 leading-tight">
+                      I confirm that I am 18 years of age or older.
+                    </label>
+                  </div>
+
                   <div className="flex gap-3">
                     <button onClick={handleSignIn} disabled={authLoading || !authTermsAccepted} className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 rounded-lg text-sm disabled:opacity-50">Sign In</button>
-                    <button onClick={handleSignUp} disabled={authLoading || !authTermsAccepted} className="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-medium py-2.5 rounded-lg text-sm disabled:opacity-50 border border-slate-700">Create Account</button>
+                    <button onClick={handleSignUp} disabled={authLoading || !authTermsAccepted || !ageVerified} className="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-medium py-2.5 rounded-lg text-sm disabled:opacity-50 border border-slate-700">Create Account</button>
                   </div>
                 </form>
 
@@ -416,7 +425,7 @@ export default function HomePage() {
                   <div className="flex-grow border-t border-slate-800"></div>
                 </div>
 
-                <button onClick={handleGoogleSignIn} disabled={authLoading || !authTermsAccepted} className="w-full bg-slate-100 hover:bg-white text-slate-900 font-semibold py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 transition disabled:opacity-50">
+                <button onClick={handleGoogleSignIn} disabled={authLoading || !authTermsAccepted || !ageVerified} className="w-full bg-slate-100 hover:bg-white text-slate-900 font-semibold py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 transition disabled:opacity-50">
                   Continue with Google
                 </button>
               </div>
@@ -665,7 +674,7 @@ export default function HomePage() {
             <div className="flex items-start gap-2 mb-6 bg-slate-950 p-3 rounded-lg border border-slate-800">
               <input type="checkbox" id="paywall-terms" checked={paywallTermsAccepted} onChange={(e) => setPaywallTermsAccepted(e.target.checked)} className="mt-0.5 shrink-0" />
               <label htmlFor="paywall-terms" className="text-xs text-slate-400 leading-tight">
-                I accept the <a href="/terms" className="text-blue-400 hover:underline" target="_blank">Terms of Service</a> and <a href="/refund" className="text-blue-400 hover:underline" target="_blank">Cancellation & Refund Policy</a> (No refunds for used credits).
+                I accept the <a href="/terms" className="text-blue-400 hover:underline" target="_blank">Terms of Service</a> and <a href="/refund" className="text-blue-400 hover:underline" target="_blank">Refund & Delivery Policy</a> (No refunds for used credits).
               </label>
             </div>
             
@@ -696,10 +705,10 @@ export default function HomePage() {
         <div className="flex flex-wrap justify-center gap-4">
           <a href="/terms" className="hover:text-blue-400 transition">Terms of Service</a>
           <a href="/privacy" className="hover:text-blue-400 transition">Privacy Policy</a>
-          <a href="/refund" className="hover:text-blue-400 transition">Cancellation & Refunds</a>
-          <a href="mailto:support@localeproof.com" className="hover:text-blue-400 transition">Contact Us</a>
+          <a href="/refund" className="hover:text-blue-400 transition">Refund & Delivery Policy</a>
+          <a href="mailto:support@localeproof.com" className="hover:text-blue-400 transition">Support</a>
         </div>
-        <p>© {currentYear || 2026} LocaleProof. All rights reserved.</p>
+        <p className="mt-2">© {currentYear || 2026} LocaleProof. All rights reserved.</p>
         <p className="mt-0">
         Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer" className="underline">OpenStreetMap</a> contributors. 
         Routing by <a href="https://openrouteservice.org/" target="_blank" rel="noreferrer" className="underline">OpenRouteService</a>.

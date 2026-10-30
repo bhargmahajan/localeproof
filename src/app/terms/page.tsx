@@ -16,6 +16,11 @@ export default function TermsPage() {
   
           <h2 className="text-xl font-semibold text-slate-200">4. Governing Law</h2>
           <p>These Terms shall be governed by and construed in accordance with the laws of India, with exclusive jurisdiction in the courts of Jammu.</p>
+
+          <h2 className="text-xl font-semibold text-slate-200">5. Grievance Redressal</h2>
+          <p>
+            For any complaints or concerns regarding our services, digital credits, or data usage, please contact our designated Grievance Officer. Full contact details, including the officer's name, physical address, and dedicated email, are available in Section 5 of our <a href="/privacy" className="text-blue-400 hover:underline">Privacy Policy</a>.
+          </p>
         </section>
       </div>
     );

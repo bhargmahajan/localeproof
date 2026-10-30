@@ -28,9 +28,6 @@ const getCategoryTags = (category: string) => {
     case 'gym': return '["leisure"="fitness_centre"]';
     case 'bank': return '["amenity"~"bank|atm"]';
     case 'restaurant': return '["amenity"~"restaurant|cafe|fast_food"]';
-    
-    // FAIL-FAST: Never silently guess 'transit'. If the frontend sends 
-    // an unknown tag, reject the request immediately.
     default: 
       throw new Error(`Invalid service category: "${category}".`);
   }
@@ -54,9 +51,15 @@ export async function GET(request: Request) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  const startLat = parseFloat(latStr);
-  const startLng = parseFloat(lngStr);
+  const rawLat = parseFloat(latStr);
+  const rawLng = parseFloat(lngStr);
+  const startLat = Math.round(rawLat * 1000) / 1000;
+  const startLng = Math.round(rawLng * 1000) / 1000;
   const claimedMinutes = parseInt(claimedMinutesStr, 10);
+
+  if ( isNaN(startLat) || startLat < -90 || startLat > 90 || isNaN(startLng) || startLng < -180 || startLng > 180 ) {
+    return NextResponse.json({ error: "Invalid coordinate or radius parameters." }, { status: 400 });
+  }
 
   const { data: history, error: dbError } = await supabaseAdmin
     .from('user_history')
@@ -169,13 +172,17 @@ export async function GET(request: Request) {
     await redis.set(cacheKey, result, { ex: 604800 });
     return NextResponse.json(result);
   } catch (err: any) {
-    // This will print the EXACT reason in your Next.js terminal 
-    // (e.g., "No school found within a 5km radius." or "Routing engine failed")
-    console.error("Commute Verification Error:", err.message);
+    console.error("Commute Verification Error:", err);
     
-    // If it's a "Not Found" issue, return a 404 instead of a 500 Server Crash
-    const statusCode = err.message.includes('No') ? 404 : 500;
+    // Preserve custom, safe "Not Found" messages
+    const isNotFound = err.message?.includes('No ') && err.message?.includes('found');
+    const statusCode = isNotFound ? 404 : 500;
     
-    return NextResponse.json({ error: err.message || 'Failed to verify commute' }, { status: statusCode });
+    // Sanitize 500 errors to prevent leaking API failures or stack traces
+    const safeMessage = isNotFound 
+      ? err.message 
+      : "Failed to verify commute due to an internal server error.";
+    
+    return NextResponse.json({ error: safeMessage }, { status: statusCode });
   }
 }

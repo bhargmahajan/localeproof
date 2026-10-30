@@ -127,8 +127,11 @@ export async function GET(request: Request) {
 
     if (!reportData) throw new Error("Failed to parse the neighborhood assessment.");
     await redis.set(cacheKey, reportData, { ex: 604800 });
+
+    
     return NextResponse.json({ source: 'ai', report: reportData });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message || 'Failed to generate audit' }, { status: 500 });
+    console.error("Neighborhood Score Error:", err);
+    return NextResponse.json({ error: 'Failed to generate neighborhood audit due to an internal server error.' }, { status: 500 });
   }
 }

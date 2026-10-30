@@ -46,7 +46,9 @@ export async function submitPhone(formData: FormData) {
     if (error.message.includes('already registered') || error.message.includes('duplicate key')) {
       return { error: "An account with this phone number already exists." }
     }
-    return { error: `Update failed: ${error.message}` }
+    // FIX: Log the raw error internally, return generic message
+    console.error("Supabase updateUserById Error:", error.message);
+    return { error: "An internal server error occurred while updating your account." }
   }
   
   return { success: true }

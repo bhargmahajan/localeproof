@@ -44,7 +44,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, credits });
   } catch (error: any) {
-    console.error("Verification Error:", error);
-    return NextResponse.json({ error: error.message || 'Payment verification failed' }, { status: 500 });
+    console.error("Payment Verification Error:", error);
+    return NextResponse.json({ error: 'Payment verification failed due to an internal server error.' }, { status: 500 });
   }
 }

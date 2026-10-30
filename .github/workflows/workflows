@@ -1,0 +1,19 @@
+name: Supabase Database Backup
+on:
+  schedule:
+    - cron: '0 2 * * *' # Runs daily at 2:00 AM UTC
+  workflow_dispatch: # Allows manual triggering
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install PostgreSQL Client
+        run: sudo apt-get install -y postgresql-client
+      - name: Dump Database
+        run: pg_dump "${{ secrets.SUPABASE_DB_URL }}" -F c -f localeproof_backup.dump
+      - name: Upload Backup Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: localeproof-db-backup-${{ github.run_id }}
+          path: localeproof_backup.dump
+          retention-days: 90
